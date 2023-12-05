@@ -1,20 +1,39 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+// App.js
 
-export default function App() {
+import React, { useEffect, useState } from "react";
+import { SafeAreaView, FlatList, Text } from "react-native";
+import Item from "./Item";
+import fetchData from "./Api";
+
+const App = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetchData()
+      .then(data => setData(data))
+      .catch(error => console.error('App.js - Error:', error));
+  }, []);
+
+  // Stil verilerini tanımladık
+  const titleStyle = {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    paddingTop: 20,
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView>
+      <Text style={titleStyle}>
+        Coins
+      </Text>
+      <FlatList
+        data={data}
+        renderItem={({ item }) => <Item item={item} />}
+        keyExtractor={(item) => item.id}
+      />
+    </SafeAreaView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
